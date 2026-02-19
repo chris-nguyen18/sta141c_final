@@ -48,10 +48,4 @@ if __name__ == "__main__":
    X_train, X_test, y_train, y_test = split_data(X, y)
    save_processed_data(X_train, X_test, y_train, y_test)
 
-   # metadata 
-   #print(dataset.metadata) 
-   # variable information 
-   #print(dataset.variables) 
-
-   
-
+   print("Data preprocessing complete.")
