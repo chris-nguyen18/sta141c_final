@@ -20,9 +20,18 @@ def load_credit_card_dataset():
 
    return X, y
 
+'''
 def clean_data(X, y):
    X = X.fillna(0) 
    y = y.astype(int)  
+
+   return X, y
+'''
+def clean_data(X, y):
+   X = X.fillna(X.median())
+   X["EDUCATION"] = X["EDUCATION"].replace({0: 4, 5: 4, 6: 4})
+   X["MARRIAGE"] = X["MARRIAGE"].replace({0: 3})
+   y = y.astype(int)
 
    return X, y
 
@@ -34,12 +43,20 @@ def split_data(X, y, test_size=0.2, random_state=67):
    return X_train, X_test, y_train, y_test
    
 
-def save_processed_data(X_train, X_test, y_train, y_test, folder="data/processed"):
+def save_processed_data(X_train, X_test, y_train, y_test):
+   script_dir = os.path.dirname(os.path.abspath(__file__))
+    
+   project_root = os.path.dirname(script_dir)
+   folder = os.path.join(project_root, "data", "processed")
+   
    os.makedirs(folder, exist_ok=True)
-   np.save(os.path.join(folder, "X_train.npy"), X_train)
-   np.save(os.path.join(folder, "X_test.npy"), X_test)
-   np.save(os.path.join(folder, "y_train.npy"), y_train)
-   np.save(os.path.join(folder, "y_test.npy"), y_test)
+   
+   X_train.to_pickle(os.path.join(folder, "X_train.pkl"))
+   X_test.to_pickle(os.path.join(folder, "X_test.pkl"))
+    
+    # Saving targets as Series
+   y_train.to_pickle(os.path.join(folder, "y_train.pkl"))
+   y_test.to_pickle(os.path.join(folder, "y_test.pkl"))
 
 if __name__ == "__main__":
    X, y = load_credit_card_dataset()
@@ -48,4 +65,4 @@ if __name__ == "__main__":
    X_train, X_test, y_train, y_test = split_data(X, y)
    save_processed_data(X_train, X_test, y_train, y_test)
 
-   print("Data preprocessing complete.")
+   print(f"Data preprocessing complete. Saved {len(X_train)} training and {len(X_test)} test samples.")
